@@ -6,7 +6,7 @@ If you're using Homebrew versions of elixir and erlang, the following command is
 
 `brew upgrade erlang elixir`
 
-In you have ASDF installed, then just do
+If you have ASDF installed, then just do
 
 `asdf install`
 
