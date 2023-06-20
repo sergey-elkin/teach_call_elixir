@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+mix deps.get && mix compile
+
+ENABLE_BENCHEE=true mix start
