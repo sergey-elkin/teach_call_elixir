@@ -13,7 +13,7 @@ If you have ASDF installed, then just do
 **How to run:**
 
 Without benchmark, with output:
-./bin/run
+`./bin/run`
 
 With benchmark, without output:
-./bin/brun
+`./bin/brun`
