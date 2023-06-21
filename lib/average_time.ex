@@ -1,11 +1,11 @@
 defmodule TeachCallElixir.AverageTime do
   alias NimbleCSV.RFC4180, as: CSV
 
-  def run(file_path, top_tasks_count) do
+  def run(file_path, top_tasks_count, _opts \\ []) do
     file_path
     |> parse_file()
     |> calc_user_tasks_durations()
-    |> top_durable_tasks(top_tasks_count)
+    |> most_durable_tasks(top_tasks_count)
   end
 
   defp parse_file(file_path) do
@@ -27,7 +27,7 @@ defmodule TeachCallElixir.AverageTime do
     end)
   end
 
-  defp top_durable_tasks(user_tasks_map, top_count) do
+  defp most_durable_tasks(user_tasks_map, top_count) do
     user_tasks_map
     |> Map.values()
     |> Enum.flat_map(&Map.to_list/1)

@@ -8,7 +8,7 @@ defmodule TeachCallElixir.TasksSum do
     |> parse_file()
     |> calc_user_tasks_durations()
     |> maybe_print_user_tasks(benchmark_mode)
-    |> top_durable_tasks(top_tasks_count)
+    |> most_durable_tasks(top_tasks_count)
   end
 
   defp parse_file(file_path) do
@@ -58,7 +58,7 @@ defmodule TeachCallElixir.TasksSum do
     user_tasks_map
   end
 
-  defp top_durable_tasks(user_tasks_map, top_count) do
+  defp most_durable_tasks(user_tasks_map, top_count) do
     user_tasks_map
     |> Map.values()
     |> Enum.flat_map(&Map.to_list/1)
