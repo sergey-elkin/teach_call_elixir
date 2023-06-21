@@ -1,4 +1,4 @@
-defmodule TeachCallElixir.Task do
+defmodule TeachCallElixir.AverageTime do
   alias NimbleCSV.RFC4180, as: CSV
 
   def run(file_path, top_tasks_count) do
@@ -23,11 +23,7 @@ defmodule TeachCallElixir.Task do
       tasks_map = acc[row.user_id] || %{}
       task_duration = (tasks_map[row.task_id] || 0) + row.work_duration
 
-      Map.put(
-        acc,
-        row.user_id,
-        Map.put(tasks_map, row.task_id, task_duration)
-      )
+      Map.put(acc, row.user_id, Map.put(tasks_map, row.task_id, task_duration))
     end)
   end
 

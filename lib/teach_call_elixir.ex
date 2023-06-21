@@ -3,7 +3,8 @@ defmodule TeachCallElixir do
   Documentation for `TeachCallElixir`.
   """
 
-  alias TeachCallElixir.Task
+  alias TeachCallElixir.AverageTime
+  alias TeachCallElixir.TasksSum
 
   @file_name "teach_call.csv"
   @top_tasks_count 10
@@ -22,14 +23,14 @@ defmodule TeachCallElixir do
 
   defp run_without_benchee() do
     @file_name
-    |> Task.run(@top_tasks_count)
+    |> TasksSum.run(@top_tasks_count)
     |> print_tasks()
   end
 
   defp run_with_benchee() do
     Benchee.run(
       %{
-        "task" => fn -> Task.run(@file_name, @top_tasks_count) end
+        "task" => fn -> TasksSum.run(@file_name, @top_tasks_count, benchmark_mode: true) end
       },
       warmup: 0,
       time: @benchmark_time,
