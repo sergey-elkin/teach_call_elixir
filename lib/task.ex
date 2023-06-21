@@ -1,19 +1,15 @@
 defmodule TeachCallElixir.Task do
   alias NimbleCSV.RFC4180, as: CSV
 
-  def run(file_path, opts \\ []) do
-    top_tasks_count = opts[:top_tasks_count]
-    benchmark_mode = opts[:benchmark_mode]
-
+  def run(file_path, top_tasks_count) do
     file_path
     |> parse_file()
     |> calc_user_tasks_durations()
     |> top_durable_tasks(top_tasks_count)
-    |> maybe_print_tasks(benchmark_mode)
   end
 
-  defp parse_file(file_name) do
-    File.stream!(file_name, read_ahead: 100_000)
+  defp parse_file(file_path) do
+    File.stream!(file_path, read_ahead: 300_000)
     |> CSV.parse_stream(skip_headers: true)
     |> Stream.map(fn [user_id, task_id, work_duration, _date, _comment] ->
       %{user_id: String.to_integer(user_id), task_id: String.to_integer(task_id), work_duration: String.to_integer(work_duration)}
@@ -37,30 +33,16 @@ defmodule TeachCallElixir.Task do
 
   defp top_durable_tasks(user_tasks_map, top_count) do
     user_tasks_map
-    |> Enum.reduce(%{}, fn {_user_id, tasks_map}, acc ->
-      tasks_map
-      |> Enum.reduce(acc, fn {task_id, duration}, acc ->
-        task_durations = (acc[task_id] || []) ++ [duration]
-
-        Map.put(acc, task_id, task_durations)
-      end)
-    end)
+    |> Map.values()
+    |> Enum.flat_map(&Map.to_list/1)
+    |> Enum.group_by(fn {task_id, _duration} -> task_id end)
     |> Enum.map(fn {task_id, durations_list} ->
       count = Enum.count(durations_list)
-      sum = Enum.sum(durations_list)
+      sum = durations_list |> Enum.reduce(0, fn {_task_id, duration}, acc -> acc + duration end)
 
       {task_id, sum / count}
     end)
     |> Enum.sort_by(fn {_task_id, avg_duration} -> avg_duration end, :desc)
     |> Enum.take(top_count)
-  end
-
-  defp maybe_print_tasks(tasks_list, benchmark_mode) do
-    tasks_list
-    |> Enum.each(fn {task_id, avg_duration} ->
-      unless benchmark_mode do
-        IO.puts("Task ##{task_id}: #{avg_duration}")
-      end
-    end)
   end
 end
